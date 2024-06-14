@@ -170,7 +170,7 @@ function cli(args: string[], cwd: string): Promise<cliResult> {
     return new Promise(resolve => {
         exec(`node ${path.resolve('./dist/cli.js')} ${args.join(' ')}`,
         { cwd },
-        (error, stdout, stderr) => { console.log(stderr); resolve({
+        (error, stdout, stderr) => { resolve({
             code: error && error.code ? error.code : 0,
             error,
             stdout,
