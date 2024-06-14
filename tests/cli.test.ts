@@ -168,7 +168,7 @@ describe('query-metadata', () => {
 
 function cli(args: string[], cwd: string): Promise<cliResult> {
     return new Promise(resolve => {
-        exec("ls ./dist", { cwd }, (error, stdout, stderr) => {
+        exec("cat ./dist/cli.js && node -v", { cwd }, (error, stdout, stderr) => {
             console.log(stdout);
         });
         exec(`node ${path.resolve('./dist/cli.js')} ${args.join(' ')}`,
