@@ -438,12 +438,7 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@eslint/js@9.10.0":
-  version "9.10.0"
-  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.10.0.tgz#eaa3cb0baec497970bb29e43a153d0d5650143c6"
-  integrity sha512-fuXtbiP5GWIn8Fz+LWoOMVf/Jxm+aajZYkhi6CuEm4SxymFM+eUWzbO9qXT+L0iCkL5+KGYMCSGxo686H19S1g==
-
-"@eslint/js@^9.8.0":
+"@eslint/js@9.10.0", "@eslint/js@^9.8.0":
   version "9.10.0"
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.10.0.tgz#eaa3cb0baec497970bb29e43a153d0d5650143c6"
   integrity sha512-fuXtbiP5GWIn8Fz+LWoOMVf/Jxm+aajZYkhi6CuEm4SxymFM+eUWzbO9qXT+L0iCkL5+KGYMCSGxo686H19S1g==
@@ -1136,10 +1131,10 @@
     "@typescript-eslint/types" "8.2.0"
     eslint-visitor-keys "^3.4.3"
 
-"@yao-pkg/pkg-fetch@3.5.10":
-  version "3.5.10"
-  resolved "https://registry.yarnpkg.com/@yao-pkg/pkg-fetch/-/pkg-fetch-3.5.10.tgz#d032413c39c2f3b4d2750d92363679d009f58ef7"
-  integrity sha512-1uBGC9lV1Bif5IONYzx6h7lX8wx7NtFrw6SZDLsax7fEl/a5R5j+Pg9iM6Y6BevsnfsuYP6KLuGMvDw0NeZmVg==
+"@yao-pkg/pkg-fetch@3.5.13":
+  version "3.5.13"
+  resolved "https://registry.yarnpkg.com/@yao-pkg/pkg-fetch/-/pkg-fetch-3.5.13.tgz#99f982a759ab3b7e046d69c294703574e354d436"
+  integrity sha512-KFIumJxNZIXoNKxJstSXbqQjdPqsxI4CKUGL/6GntsQ4U9bBAawkpkJh4s4vMUjGmx7otPvstdgYcO/3TerzzQ==
   dependencies:
     chalk "^4.1.2"
     fs-extra "^9.1.0"
@@ -1151,14 +1146,14 @@
     yargs "^16.2.0"
 
 "@yao-pkg/pkg@^5.12.0":
-  version "5.13.0"
-  resolved "https://registry.yarnpkg.com/@yao-pkg/pkg/-/pkg-5.13.0.tgz#04c1f2ab1ea9f347848f794254b66d427dc7d4ce"
-  integrity sha512-DPB5TNpYHxaLuFf5U8Vfu8Oxh3QYZJeqLLXAutcNcYca0RdEU124T3L2f/y4ad6sh1x47deiGvM4GmN9aq3snQ==
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/@yao-pkg/pkg/-/pkg-5.15.0.tgz#3e5084f4ef6565d65a853d2ae75468eb8f0370b2"
+  integrity sha512-VKgSO7Djch98NEByNJucpuqVlGre5cyhCHeQ1CfhetMCOrl5X146lJCDNsRyq9vP7KpajPunTgVYvAIbV+Z+8g==
   dependencies:
     "@babel/generator" "7.23.0"
     "@babel/parser" "7.23.0"
     "@babel/types" "7.23.0"
-    "@yao-pkg/pkg-fetch" "3.5.10"
+    "@yao-pkg/pkg-fetch" "3.5.13"
     chalk "^4.1.2"
     fs-extra "^9.1.0"
     globby "^11.1.0"
@@ -1821,7 +1816,7 @@ date-fns@^1.27.2:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
 
-debug@4:
+debug@4, debug@^4.3.1, debug@^4.3.2:
   version "4.3.7"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.7.tgz#87945b4151a011d76d95a198d7111c865c360a52"
   integrity sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==
@@ -1834,13 +1829,6 @@ debug@^4.1.0, debug@^4.1.1:
   integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
   dependencies:
     ms "2.1.2"
-
-debug@^4.3.1, debug@^4.3.2:
-  version "4.3.7"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.7.tgz#87945b4151a011d76d95a198d7111c865c360a52"
-  integrity sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==
-  dependencies:
-    ms "^2.1.3"
 
 debug@^4.3.4:
   version "4.3.5"
@@ -3856,9 +3844,9 @@ new-github-release-url@^2.0.0:
     type-fest "^2.5.1"
 
 node-abi@^3.3.0:
-  version "3.67.0"
-  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-3.67.0.tgz#1d159907f18d18e18809dbbb5df47ed2426a08df"
-  integrity sha512-bLn/fU/ALVBE9wj+p4Y21ZJWYFjUXLXPi/IewyLZkx3ApxKDNBWCKdReeKOtD8dWpOdDCeMyLh6ZewzcLsG2Nw==
+  version "3.68.0"
+  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-3.68.0.tgz#8f37fb02ecf4f43ebe694090dcb52e0c4cc4ba25"
+  integrity sha512-7vbj10trelExNjFSBm5kTvZXXa7pZyKWx9RCKIyqe6I9Ev3IzGpQoqBP3a+cOdxY+pWj6VkP28n/2wWysBHD/A==
   dependencies:
     semver "^7.3.5"
 
@@ -4300,9 +4288,9 @@ proto-list@~1.2.1:
   integrity sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==
 
 pump@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/pump/-/pump-3.0.0.tgz#b4a2116815bde2f4e1ea602354e8c75565107a64"
-  integrity sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/pump/-/pump-3.0.2.tgz#836f3edd6bc2ee599256c924ffe0d88573ddcbf8"
+  integrity sha512-tUPXtzlGM8FE3P0ZL6DVs/3P58k9nk8/jZeQCurTJylQA8qFYzHFfhBJkuqyE0FifOsQ0uKWekiZ5g8wtr28cw==
   dependencies:
     end-of-stream "^1.1.0"
     once "^1.3.1"
