@@ -1,6 +1,6 @@
 {
   "name": "random-bunny",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Get a random subreddit image url",
   "license": "MIT",
   "author": "Vylpes",
@@ -60,7 +60,7 @@
     "typescript-eslint": "^8.36.0"
   },
   "resolutions": {
-      "**/brace-expansion": "^2.0.2"
+    "**/brace-expansion": "^2.0.2"
   },
   "files": [
     "dist"
