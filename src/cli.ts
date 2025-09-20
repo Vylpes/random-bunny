@@ -10,7 +10,7 @@ const program = new Command();
 program
     .name('random-bunny')
     .description('Get a random image url from a subreddit of your choosing')
-    .version('2.3')
+    .version('2.4')
     .option('-s, --subreddit <subreddit>', 'The subreddit to search', 'rabbits')
     .option('-j, --json', 'Output as JSON')
     .option('-q, --query-metadata', 'Include query metadata in result')
