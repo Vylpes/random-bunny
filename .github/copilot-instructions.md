@@ -48,4 +48,4 @@
 - Tests: `tests/`
 
 ---
-For more, see [README.md](../readme.md) and [docs/cli.md](../docs/cli.md).
+For more, see [README.md](../README.md) and [docs/cli.md](../docs/cli.md).
