@@ -5,7 +5,31 @@ import { List } from 'linqts';
 import IFetchResult from "./contracts/IFetchResult";
 import { ErrorCode } from "./constants/ErrorCode";
 import ErrorMessages from "./constants/ErrorMessages";
-import ImageHelper from "./helpers/imageHelper";
+
+function convertRedditUrl(url?: string): string | undefined {
+    if (!url) {
+        return undefined;
+    }
+
+    return url
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">");
+}
+
+function getGalleryImageUrls(post: IFetchResult["data"]): string[] {
+    if (!post.gallery_data?.items?.length || !post.media_metadata) {
+        return [];
+    }
+
+    return post.gallery_data.items
+        .map((item) => {
+            const metadata = post.media_metadata?.[item.media_id];
+
+            return convertRedditUrl(metadata?.s?.u);
+        })
+        .filter((url): url is string => !!url);
+}
 
 export default async function randomBunny(subreddit: string, sortBy: "new" | "hot" | "top" = 'hot', limit: number = 100): Promise<IReturnResult> {
     if (limit < 1 || limit > 100) {
@@ -66,7 +90,7 @@ export default async function randomBunny(subreddit: string, sortBy: "new" | "ho
     const data: IFetchResult[] = json.data.children;
 
     const dataWithImages = new List<IFetchResult>(data)
-        .Where(x => x!.data.url.includes('.jpg') || x!.data.url.includes('.png') || x!.data.url.includes("/gallery/"))
+        .Where(x => x!.data.url.includes('.jpg') || x!.data.url.includes('.png') || x!.data.is_gallery == true)
         .ToArray();
 
     let random = 0;
@@ -92,33 +116,17 @@ export default async function randomBunny(subreddit: string, sortBy: "new" | "ho
 
     const randomData = randomSelect.data;
 
-    let url: string;
-    let gallery: string[];
+    let gallery: string[] = [];
 
-    if (randomData.url.includes("/gallery")) {
-        const galleryImage = await ImageHelper.FetchImageFromRedditGallery(`https://reddit.com${randomData.permalink}`);
+    if (randomData.is_gallery == true) {
+        gallery = getGalleryImageUrls(randomData);
+    }
 
-        if (!galleryImage) {
-            return {
-                IsSuccess: false,
-                Query: {
-                    subreddit: subreddit,
-                    sortBy: sortBy,
-                    limit: limit,
-                },
-                Error: {
-                    Code: ErrorCode.NoImageResultsFound,
-                    Message: ErrorMessages.NoImageResultsFound,
-                },
-            }
-        }
-
-        url = galleryImage[0];
-        gallery = galleryImage;
-    } else {
-        url = randomData.url;
+    if (gallery.length == 0) {
         gallery = [randomData.url];
     }
+
+    const url = gallery[0];
 
     const redditResult: IRedditResult = {
         Author: randomData['author'],
