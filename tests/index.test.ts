@@ -1,12 +1,13 @@
 import { ErrorCode } from "../src/constants/ErrorCode";
 import ErrorMessages from "../src/constants/ErrorMessages";
+import RedditHelper from "../src/helpers/redditHelper";
 import randomBunny from "../src/index";
 import fetch from "got-cjs";
 
 jest.mock('got-cjs');
 const fetchMock = jest.mocked(fetch);
 
-const redditHeaders = { "User-Agent": "web:random-bunny:v2.4.1 (by /u/vylpes)" };
+const redditHeaders = { "User-Agent": RedditHelper.UserAgent };
 
 function mockRedditListing(body: unknown) {
     fetchMock
