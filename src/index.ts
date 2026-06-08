@@ -6,6 +6,50 @@ import IFetchResult from "./contracts/IFetchResult";
 import { ErrorCode } from "./constants/ErrorCode";
 import ErrorMessages from "./constants/ErrorMessages";
 
+const REDDIT_USER_AGENT = "web:random-bunny:v2.4.1 (by /u/vylpes)";
+
+function getCookieHeader(setCookieHeaders: string | string[] | undefined): string | undefined {
+    if (!setCookieHeaders) {
+        return undefined;
+    }
+
+    const headers = Array.isArray(setCookieHeaders) ? setCookieHeaders : [setCookieHeaders];
+
+    return headers.map((cookie) => cookie.split(";")[0]).join("; ");
+}
+
+async function fetchRedditListing(
+    subreddit: string,
+    sortBy: "new" | "hot" | "top",
+    limit: number,
+) {
+    const headers = { "User-Agent": REDDIT_USER_AGENT };
+
+    try {
+        const session = await fetch(`https://old.reddit.com/r/${subreddit}/${sortBy}/`, {
+            throwHttpErrors: false,
+            headers,
+        });
+
+        const cookieHeader = getCookieHeader(session.headers["set-cookie"]);
+        const listing = await fetch(`https://old.reddit.com/r/${subreddit}/${sortBy}.json?limit=${limit}`, {
+            throwHttpErrors: false,
+            headers: {
+                ...headers,
+                ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+            },
+        });
+
+        if (listing.statusCode != 200) {
+            return null;
+        }
+
+        return listing;
+    } catch {
+        return null;
+    }
+}
+
 function convertRedditUrl(url?: string): string | undefined {
     if (!url) {
         return undefined;
@@ -47,13 +91,7 @@ export default async function randomBunny(subreddit: string, sortBy: "new" | "ho
         };
     }
 
-    const result = await fetch(`https://reddit.com/r/${subreddit}/${sortBy}.json?limit=${limit}`)
-        .then((res) => {
-            return res;
-        })
-        .catch(() => {
-            return null;
-        });
+    const result = await fetchRedditListing(subreddit, sortBy, limit);
 
     if (!result) {
         return {
