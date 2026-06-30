@@ -1,10 +1,26 @@
 import RedditHelper from "../../src/helpers/redditHelper";
-import fetch from "got-cjs";
 
-jest.mock("got-cjs");
-const fetchMock = jest.mocked(fetch);
+const fetchMock = jest.fn();
+global.fetch = fetchMock;
 
 const redditHeaders = { "User-Agent": RedditHelper.UserAgent };
+
+function mockFetchResponse(options: {
+    status?: number;
+    body?: string;
+    cookies?: string[];
+} = {}) {
+    const status = options.status ?? 200;
+
+    return {
+        ok: status >= 200 && status < 300,
+        status,
+        text: async () => options.body ?? "",
+        headers: {
+            getSetCookie: () => options.cookies ?? [],
+        },
+    } as Response;
+}
 
 beforeEach(() => {
     fetchMock.mockReset();
@@ -12,49 +28,35 @@ beforeEach(() => {
 
 describe("FetchListing", () => {
     test("GIVEN session and listing requests succeed, EXPECT listing response to be returned", async () => {
-        const listingResponse = {
-            statusCode: 200,
-            body: '{"data":{"children":[]}}',
-        };
+        const listingBody = '{"data":{"children":[]}}';
 
         fetchMock
-            .mockResolvedValueOnce({
-                statusCode: 200,
-                headers: { "set-cookie": ["session=abc; Path=/", "token=xyz; Path=/"] },
+            .mockResolvedValueOnce(mockFetchResponse({
                 body: "<html></html>",
-            })
-            .mockResolvedValueOnce(listingResponse);
+                cookies: ["session=abc; Path=/", "token=xyz; Path=/"],
+            }))
+            .mockResolvedValueOnce(mockFetchResponse({ body: listingBody }));
 
         const result = await RedditHelper.FetchListing("rabbits", "hot", 25);
 
-        expect(result).toBe(listingResponse);
+        expect(result).toEqual({ body: listingBody });
         expect(fetchMock).toHaveBeenCalledTimes(2);
         expect(fetchMock).toHaveBeenNthCalledWith(1, "https://old.reddit.com/r/rabbits/hot/", {
-            throwHttpErrors: false,
             headers: redditHeaders,
         });
         expect(fetchMock).toHaveBeenNthCalledWith(2, "https://old.reddit.com/r/rabbits/hot.json?limit=25", {
-            throwHttpErrors: false,
             headers: { ...redditHeaders, Cookie: "session=abc; token=xyz" },
         });
     });
 
     test("GIVEN session response has no cookies, EXPECT listing request without Cookie header", async () => {
         fetchMock
-            .mockResolvedValueOnce({
-                statusCode: 200,
-                headers: {},
-                body: "<html></html>",
-            })
-            .mockResolvedValueOnce({
-                statusCode: 200,
-                body: '{"data":{"children":[]}}',
-            });
+            .mockResolvedValueOnce(mockFetchResponse({ body: "<html></html>" }))
+            .mockResolvedValueOnce(mockFetchResponse({ body: '{"data":{"children":[]}}' }));
 
         await RedditHelper.FetchListing("rabbits", "new", 100);
 
         expect(fetchMock).toHaveBeenNthCalledWith(2, "https://old.reddit.com/r/rabbits/new.json?limit=100", {
-            throwHttpErrors: false,
             headers: redditHeaders,
         });
     });
@@ -70,11 +72,10 @@ describe("FetchListing", () => {
 
     test("GIVEN listing request fails, EXPECT null", async () => {
         fetchMock
-            .mockResolvedValueOnce({
-                statusCode: 200,
-                headers: { "set-cookie": ["session=abc; Path=/"] },
+            .mockResolvedValueOnce(mockFetchResponse({
                 body: "<html></html>",
-            })
+                cookies: ["session=abc; Path=/"],
+            }))
             .mockRejectedValueOnce(new Error("network error"));
 
         const result = await RedditHelper.FetchListing("rabbits", "hot", 100);
@@ -85,15 +86,11 @@ describe("FetchListing", () => {
 
     test("GIVEN listing request returns 403, EXPECT null", async () => {
         fetchMock
-            .mockResolvedValueOnce({
-                statusCode: 200,
-                headers: { "set-cookie": ["session=abc; Path=/"] },
+            .mockResolvedValueOnce(mockFetchResponse({
                 body: "<html></html>",
-            })
-            .mockResolvedValueOnce({
-                statusCode: 403,
-                body: "<html>Blocked</html>",
-            });
+                cookies: ["session=abc; Path=/"],
+            }))
+            .mockResolvedValueOnce(mockFetchResponse({ status: 403, body: "<html>Blocked</html>" }));
 
         const result = await RedditHelper.FetchListing("rabbits", "hot", 100);
 

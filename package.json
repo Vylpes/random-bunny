@@ -22,7 +22,6 @@
   "dependencies": {
     "commander": "^14.0.0",
     "glob-parent": "^6.0.0",
-    "got-cjs": "^12.5.4",
     "linqts": "^2.0.0"
   },
   "scripts": {

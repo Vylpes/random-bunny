@@ -1,4 +1,6 @@
-import fetch from "got-cjs";
+export interface IListingResponse {
+    body: string;
+}
 
 export default class RedditHelper {
     public static readonly UserAgent = "web:random-bunny:v2.4.1 (by /u/vylpes)";
@@ -7,41 +9,34 @@ export default class RedditHelper {
         subreddit: string,
         sortBy: "new" | "hot" | "top",
         limit: number,
-    ) {
+    ): Promise<IListingResponse | null> {
         const headers = { "User-Agent": RedditHelper.UserAgent };
 
         try {
-            const session = await fetch(`https://old.reddit.com/r/${subreddit}/${sortBy}/`, {
-                throwHttpErrors: false,
-                headers,
-            });
-
-            const cookieHeader = RedditHelper.GetCookieHeader(session.headers["set-cookie"]);
+            const session = await fetch(`https://old.reddit.com/r/${subreddit}/${sortBy}/`, { headers });
+            const cookieHeader = RedditHelper.GetCookieHeader(session.headers.getSetCookie());
             const listing = await fetch(`https://old.reddit.com/r/${subreddit}/${sortBy}.json?limit=${limit}`, {
-                throwHttpErrors: false,
                 headers: {
                     ...headers,
                     ...(cookieHeader ? { Cookie: cookieHeader } : {}),
                 },
             });
 
-            if (listing.statusCode != 200) {
+            if (!listing.ok) {
                 return null;
             }
 
-            return listing;
+            return { body: await listing.text() };
         } catch {
             return null;
         }
     }
 
-    private static GetCookieHeader(setCookieHeaders: string | string[] | undefined): string | undefined {
-        if (!setCookieHeaders) {
+    private static GetCookieHeader(setCookieHeaders: string[]): string | undefined {
+        if (setCookieHeaders.length === 0) {
             return undefined;
         }
 
-        const headers = Array.isArray(setCookieHeaders) ? setCookieHeaders : [setCookieHeaders];
-
-        return headers.map((cookie) => cookie.split(";")[0]).join("; ");
+        return setCookieHeaders.map((cookie) => cookie.split(";")[0]).join("; ");
     }
 }

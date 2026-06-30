@@ -2,24 +2,38 @@ import { ErrorCode } from "../src/constants/ErrorCode";
 import ErrorMessages from "../src/constants/ErrorMessages";
 import RedditHelper from "../src/helpers/redditHelper";
 import randomBunny from "../src/index";
-import fetch from "got-cjs";
 
-jest.mock('got-cjs');
-const fetchMock = jest.mocked(fetch);
+const fetchMock = jest.fn();
+global.fetch = fetchMock;
 
 const redditHeaders = { "User-Agent": RedditHelper.UserAgent };
 
+function mockFetchResponse(options: {
+    status?: number;
+    body?: string;
+    cookies?: string[];
+} = {}) {
+    const status = options.status ?? 200;
+
+    return {
+        ok: status >= 200 && status < 300,
+        status,
+        text: async () => options.body ?? "",
+        headers: {
+            getSetCookie: () => options.cookies ?? [],
+        },
+    } as Response;
+}
+
 function mockRedditListing(body: unknown) {
     fetchMock
-        .mockResolvedValueOnce({
-            statusCode: 200,
-            headers: { "set-cookie": ["session=abc; Path=/"] },
+        .mockResolvedValueOnce(mockFetchResponse({
             body: "<html></html>",
-        })
-        .mockResolvedValueOnce({
-            statusCode: 200,
+            cookies: ["session=abc; Path=/"],
+        }))
+        .mockResolvedValueOnce(mockFetchResponse({
             body: JSON.stringify(body),
-        });
+        }));
 }
 
 beforeEach(() => {
@@ -56,11 +70,9 @@ describe('randomBunny', () => {
         expect(result.Error).toBeUndefined();
 
         expect(fetchMock).toHaveBeenNthCalledWith(1, 'https://old.reddit.com/r/rabbits/new/', {
-            throwHttpErrors: false,
             headers: redditHeaders,
         });
         expect(fetchMock).toHaveBeenNthCalledWith(2, 'https://old.reddit.com/r/rabbits/new.json?limit=100', {
-            throwHttpErrors: false,
             headers: { ...redditHeaders, Cookie: 'session=abc' },
         });
     });
@@ -308,15 +320,14 @@ describe('randomBunny', () => {
 
     test("GIVEN the listing fetch returns 403, EXPECT failure result", async () => {
         fetchMock
-            .mockResolvedValueOnce({
-                statusCode: 200,
-                headers: { "set-cookie": ["session=abc; Path=/"] },
+            .mockResolvedValueOnce(mockFetchResponse({
                 body: "<html></html>",
-            })
-            .mockResolvedValueOnce({
-                statusCode: 403,
+                cookies: ["session=abc; Path=/"],
+            }))
+            .mockResolvedValueOnce(mockFetchResponse({
+                status: 403,
                 body: "<html>Blocked</html>",
-            });
+            }));
 
         const result = await randomBunny('rabbits', 'new');
 
