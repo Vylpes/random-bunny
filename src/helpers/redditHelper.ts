@@ -3,7 +3,7 @@ export interface IListingResponse {
 }
 
 export default class RedditHelper {
-    public static readonly UserAgent = "web:random-bunny:v2.4.1 (by /u/vylpes)";
+    public static readonly UserAgent = "web:random-bunny:v2.4.2 (by /u/vylpes)";
 
     public static async FetchListing(
         subreddit: string,
