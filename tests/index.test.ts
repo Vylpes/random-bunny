@@ -202,7 +202,7 @@ describe('randomBunny', () => {
         expect(fetchMock).toHaveBeenCalledWith('https://reddit.com/r/rabbits/new.json?limit=100');
 
         expect(ImageHelper.FetchImageFromRedditGallery).toHaveBeenCalledTimes(1);
-        expect(ImageHelper.FetchImageFromRedditGallery).toHaveBeenCalledWith("https://i.redd.it/gallery/cr8xudsnkgua1");
+        expect(ImageHelper.FetchImageFromRedditGallery).toHaveBeenCalledWith("https://reddit.com/r/Rabbits/comments/12pa5te/someone_told_pickles_its_monday_internal_fury/");
     });
 
     test("GIVEN data fetched is a gallery AND an image is not returned from the helper, EXPECT error", async () => {

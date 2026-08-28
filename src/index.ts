@@ -96,7 +96,7 @@ export default async function randomBunny(subreddit: string, sortBy: "new" | "ho
     let gallery: string[];
 
     if (randomData.url.includes("/gallery")) {
-        const galleryImage = await ImageHelper.FetchImageFromRedditGallery(randomData.url);
+        const galleryImage = await ImageHelper.FetchImageFromRedditGallery(`https://reddit.com${randomData.permalink}`);
 
         if (!galleryImage) {
             return {

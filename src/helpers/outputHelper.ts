@@ -10,7 +10,7 @@ export default class OutputHelper {
         outputObject = { ...result };
 
         if (options.queryMetadata) {
-            outputObject = { ...outputObject, ...response.Query }
+            outputObject = { ...outputObject, Query: { ...response.Query } }
         }
 
         if (options.json) {
@@ -20,11 +20,16 @@ export default class OutputHelper {
         return this.GetFriendlyObjectText(outputObject);
     }
 
-    private static GetFriendlyObjectText<T>(object: T): string {
+    private static GetFriendlyObjectText<T>(object: T, indent: string = ''): string {
         const output: string[] = [];
 
         for (const key in object) {
-            output.push(`${key} = ${object[key]}`);
+            if (typeof object[key] === 'object' && object[key] !== null) {
+                output.push(`${indent}${key}:`);
+                output.push(this.GetFriendlyObjectText(object[key], indent + '  '));
+            } else {
+                output.push(`${indent}${key} = ${object[key]}`);
+            }
         }
 
         return output.join("\n");
