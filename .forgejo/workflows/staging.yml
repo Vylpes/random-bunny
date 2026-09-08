@@ -32,6 +32,8 @@ jobs:
       with:
         node-version: 20.x
     - run: yarn install --frozen-lockfile
+    - name: Append Version String
+      run: echo "export default '${{ github.REF_NAME }}';" > src/constants/Version.ts
     - run: yarn build
     - run: yarn package
     - name: Upload Binary
